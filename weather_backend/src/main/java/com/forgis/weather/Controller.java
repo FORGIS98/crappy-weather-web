@@ -1,7 +1,10 @@
 package com.forgis.weather;
 
-import java.net.http.HttpResponse;
+import com.google.gson.Gson;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,16 +16,22 @@ public class Controller extends WeatherFormat {
     private String url = "https://api.openweathermap.org/data/2.5/weather?units=metric";
 
     @GetMapping("/weather")
-    Weather getWeather(@RequestParam(name = "city", required = true) String city,
-            @RequestParam(name = "country", required = false) String country) {
+    JSONObject getWeather(@RequestParam(name = "city", required = true) String city) {
 
         url += "&q=" + city;
-        if (country != null) {
-            url += "," + country;
-        }
         url += "&appid=" + OPENWEATHER_API_KEY;
 
-        HttpResponse<String> response = call_api(url);
-        return create_weather(response);
+        Weather wth = create_weather(url);
+        String jsonInString = new Gson().toJson(wth);
+        JSONParser jParser = new JSONParser();
+        JSONObject jObject = new JSONObject();
+
+        try {
+            jObject = (JSONObject) jParser.parse(jsonInString);
+        } catch (ParseException parseEx) {
+            parseEx.getStackTrace();
+        }
+
+        return jObject;
     }
 }

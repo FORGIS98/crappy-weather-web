@@ -6,6 +6,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.HashMap;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -13,6 +14,33 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class WeatherFormat {
+
+    public Weather create_weather(String url) {
+        HttpResponse<String> response = call_api(url);
+
+        Weather weather;
+        try {
+            JSONObject jObject = new JSONObject();
+            JSONParser jParser = new JSONParser();
+            jObject = (JSONObject) jParser.parse(response.body());
+
+            String description = getDescription((JSONArray) jObject.get("weather"));
+            String city = jObject.get("name").toString();
+            String country = getCountryCode((JSONObject) jObject.get("sys"));
+            String weather_icon = getIcon((JSONArray) jObject.get("weather"));
+            HashMap<String, Float> temperature = getTemperature((JSONObject) jObject.get("main"));
+
+            weather = new Weather(description, city, country, weather_icon, temperature);
+        } catch (ParseException parserEx) {
+            weather = new Weather();
+            parserEx.getStackTrace();
+        } catch (NumberFormatException numberEx) {
+            weather = new Weather();
+            numberEx.getStackTrace();
+        }
+        return weather;
+    }
+
     public HttpResponse<String> call_api(String url) {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
@@ -29,15 +57,27 @@ public class WeatherFormat {
         return response;
     }
 
-    public Weather create_weather(HttpResponse<String> response) {
-        try {
-            JSONObject jObject = new JSONObject();
-            JSONParser jParser = new JSONParser();
-            jObject = (JSONObject) jParser.parse(response.body());
-            jObject.get("weather");
-        } catch (ParseException parserEx) {
-            parserEx.getStackTrace();
-        }
-        return null;
+    private String getDescription(JSONArray jArray) {
+        JSONObject jObject = new JSONObject();
+        jObject = (JSONObject) jArray.get(0);
+        return jObject.get("description").toString();
+    }
+
+    private String getIcon(JSONArray jArray) {
+        JSONObject jObject = new JSONObject();
+        jObject = (JSONObject) jArray.get(0);
+        return jObject.get("icon").toString();
+    }
+
+    private HashMap<String, Float> getTemperature(JSONObject jObject) throws NumberFormatException {
+        HashMap<String, Float> temp = new HashMap<String, Float>();
+        temp.put("temp", Float.parseFloat(jObject.get("temp").toString()));
+        temp.put("min", Float.parseFloat(jObject.get("temp_min").toString()));
+        temp.put("max", Float.parseFloat(jObject.get("temp_max").toString()));
+        return temp;
+    }
+
+    private String getCountryCode(JSONObject jObject) {
+        return jObject.get("country").toString();
     }
 }
