@@ -1,0 +1,12 @@
+<div>
+  <label for="city">Introduce una Ciudad: </label>
+  <input id="city" #city placeholder="Ciudad" />
+  <label for="country">Opcional: Introduce un Pais: </label>
+  <input id="country" #country placeholder="País" />
+</div>
+
+<button (click)="search(city.value, country.value)">Buscar</button>
+
+<div ngIf*="weather">
+  {{ weather.description }}
+</div>
