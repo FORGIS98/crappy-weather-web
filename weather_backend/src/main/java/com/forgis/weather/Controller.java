@@ -13,15 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class Controller extends WeatherFormat {
 
     private final String OPENWEATHER_API_KEY = System.getenv("OPEN_WEATHER");
-    private String url = "https://api.openweathermap.org/data/2.5/weather?units=metric";
+    private final String url = "https://api.openweathermap.org/data/2.5/weather?units=metric";
 
     @GetMapping("/weather")
     JSONObject getWeather(@RequestParam(name = "city", required = true) String city) {
 
-        url += "&q=" + city;
-        url += "&appid=" + OPENWEATHER_API_KEY;
+        String query = url;
+        query += "&q=" + city;
+        query += "&appid=" + OPENWEATHER_API_KEY;
 
-        Weather wth = create_weather(url);
+        Weather wth = create_weather(query);
         String jsonInString = new Gson().toJson(wth);
         JSONParser jParser = new JSONParser();
         JSONObject jObject = new JSONObject();

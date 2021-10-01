@@ -17,8 +17,6 @@ public class Weather {
         this.country_code = countre_code;
         this.weather_icon = weather_icon;
         this.temperature = temperature;
-        this.rain = -1.0f;
-        this.snow = -1.0f;
     }
 
     public void setRain(float rain) {

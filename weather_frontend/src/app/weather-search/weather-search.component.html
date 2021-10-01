@@ -1,12 +1,48 @@
 <div>
   <label for="city">Introduce una Ciudad: </label>
   <input id="city" #city placeholder="Ciudad" />
+  <br />
   <label for="country">Opcional: Introduce un Pais: </label>
-  <input id="country" #country placeholder="País" />
+  <input id="country" #country placeholder="País (Opcional)" />
 </div>
 
 <button (click)="search(city.value, country.value)">Buscar</button>
 
-<div ngIf*="weather">
-  {{ weather.description }}
+<div *ngIf="weather">
+  <table>
+    <tbody>
+      <tr>
+        <td>Ciudad:</td>
+        <td>{{ weather.city_name }}</td>
+      </tr>
+      <tr>
+        <td>Pais:</td>
+        <td>{{ weather.country_code }}</td>
+      </tr>
+      <tr>
+        <td>Descripción:</td>
+        <td>{{ weather.description }}</td>
+      </tr>
+      <tr>
+        <td *ngIf="weather.rain">Lluvia:</td>
+        <td *ngIf="weather.rain">{{ weather.rain }}</td>
+      </tr>
+      <tr>
+        <td *ngIf="weather.snow">Nieve:</td>
+        <td *ngIf="weather.rain">{{ weather.snow }}</td>
+      </tr>
+      <tr>
+        <td>Temp Max:</td>
+        <td>{{ weather.temperature.max }}</td>
+      </tr>
+      <tr>
+        <td>Temp Min:</td>
+        <td>{{ weather.temperature.min }}</td>
+      </tr>
+      <tr>
+        <td>Temp Actual:</td>
+        <td>{{ weather.temperature.temp }}</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
