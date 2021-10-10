@@ -41,7 +41,7 @@ public class WeatherFormat {
         return weather;
     }
 
-    public HttpResponse<String> call_api(String url) {
+    private HttpResponse<String> call_api(String url) {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
         HttpResponse<String> response = null;

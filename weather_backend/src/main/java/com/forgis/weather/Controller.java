@@ -18,21 +18,28 @@ public class Controller extends WeatherFormat {
     @GetMapping("/weather")
     JSONObject getWeather(@RequestParam(name = "city", required = true) String city) {
 
-        String query = url;
-        query += "&q=" + city;
-        query += "&appid=" + OPENWEATHER_API_KEY;
+        if (city.indexOf(' ') != -1) {
+            JSONObject jObject = new JSONObject();
+            jObject.put("error", "Currently the web does not support multi-word cities. (Such as New York, Los Angeles, Saint Louis).");
+            jObject.put("status", "400");
+            return jObject;
+        } else {
+            String query = url;
+            query += "&q=" + city;
+            query += "&appid=" + OPENWEATHER_API_KEY;
 
-        Weather wth = create_weather(query);
-        String jsonInString = new Gson().toJson(wth);
-        JSONParser jParser = new JSONParser();
-        JSONObject jObject = new JSONObject();
+            Weather wth = create_weather(query);
+            String jsonInString = new Gson().toJson(wth);
+            JSONParser jParser = new JSONParser();
+            JSONObject jObject = new JSONObject();
 
-        try {
-            jObject = (JSONObject) jParser.parse(jsonInString);
-        } catch (ParseException parseEx) {
-            parseEx.getStackTrace();
+            try {
+                jObject = (JSONObject) jParser.parse(jsonInString);
+            } catch (ParseException parseEx) {
+                parseEx.getStackTrace();
+            }
+
+            return jObject;
         }
-
-        return jObject;
     }
 }

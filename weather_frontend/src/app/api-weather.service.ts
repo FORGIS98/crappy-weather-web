@@ -6,25 +6,24 @@ import { Observable, of } from 'rxjs';
 import { Weather } from './weather';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiWeatherService {
+  private base_url = 'http://localhost:8080/weather';
 
-  private base_url = "http://localhost:8080/weather";
+  constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) { }
-
-  getWeather(city: string, country: string): Observable<Weather> {
-    const url = country ? `${this.base_url}?city=${city},${country}` : `${this.base_url}?city=${city}`;
-    return this.http.get<Weather>(url).pipe(
-      catchError(this.handleError<Weather>(`Weather city=${city} and country?${country}`))
-    );
+  getWeather(city: string): Observable<Weather> {
+    const url = `${this.base_url}?city=${city}`;
+    return this.http
+      .get<Weather>(url)
+      .pipe(catchError(this.handleError<Weather>(`Weather city=${city}`)));
   }
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.error(error);
       return of(result as T);
-    }
+    };
   }
 }
