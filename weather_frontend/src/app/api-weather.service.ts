@@ -13,7 +13,7 @@ export class ApiWeatherService {
 
   constructor(private http: HttpClient) {}
 
-  getWeather(city: string): Observable<Weather> {
+  getWeather(city: string): Observable<any> {
     const url = `${this.base_url}?city=${city}`;
     return this.http
       .get<Weather>(url)
