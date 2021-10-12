@@ -5,7 +5,7 @@
 
 <button (click)="search(city.value)">Search</button>
 
-<div *ngIf="!weather.error">
+<div *ngIf="!error && weather">
   <table>
     <tbody>
       <tr>
@@ -39,6 +39,17 @@
       <tr>
         <td>Actual Temp:</td>
         <td>{{ weather.temperature.temp }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div *ngIf="error">
+  <table>
+    <tbody>
+      <tr>
+        <td>Error:</td>
+        <td>{{ error.error }}</td>
       </tr>
     </tbody>
   </table>
