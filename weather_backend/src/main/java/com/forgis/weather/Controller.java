@@ -20,7 +20,8 @@ public class Controller extends WeatherFormat {
 
         if (city.indexOf(' ') != -1) {
             JSONObject jObject = new JSONObject();
-            jObject.put("error", "Currently the web does not support multi-word cities. (Such as New York, Los Angeles, Saint Louis).");
+            jObject.put("error",
+                    "Currently the web does not support multi-word cities. (Such as New York, Los Angeles, Saint Louis).");
             jObject.put("status", "400");
             return jObject;
         } else {
@@ -28,15 +29,17 @@ public class Controller extends WeatherFormat {
             query += "&q=" + city;
             query += "&appid=" + OPENWEATHER_API_KEY;
 
-            Weather wth = create_weather(query);
-            String jsonInString = new Gson().toJson(wth);
             JSONParser jParser = new JSONParser();
             JSONObject jObject = new JSONObject();
-
             try {
+                Weather wth = create_weather(query);
+                String jsonInString = new Gson().toJson(wth);
                 jObject = (JSONObject) jParser.parse(jsonInString);
             } catch (ParseException parseEx) {
                 parseEx.getStackTrace();
+            } catch (NotFoundException notFoundEx) {
+                jObject.put("error", notFoundEx.message);
+                jObject.put("status", notFoundEx.code);
             }
 
             return jObject;
