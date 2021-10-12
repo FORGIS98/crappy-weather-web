@@ -15,7 +15,7 @@ import org.json.simple.parser.ParseException;
 
 public class WeatherFormat {
 
-    public Weather create_weather(String url) {
+    public Weather create_weather(String url) throws NotFoundException {
         HttpResponse<String> response = call_api(url);
 
         Weather weather;
@@ -24,13 +24,17 @@ public class WeatherFormat {
             JSONParser jParser = new JSONParser();
             jObject = (JSONObject) jParser.parse(response.body());
 
-            String description = getDescription((JSONArray) jObject.get("weather"));
-            String city = jObject.get("name").toString();
-            String country = getCountryCode((JSONObject) jObject.get("sys"));
-            String weather_icon = getIcon((JSONArray) jObject.get("weather"));
-            HashMap<String, Float> temperature = getTemperature((JSONObject) jObject.get("main"));
+            if (jObject.get("cod").toString().equals("200")) {
+                String description = getDescription((JSONArray) jObject.get("weather"));
+                String city = jObject.get("name").toString();
+                String country = getCountryCode((JSONObject) jObject.get("sys"));
+                String weather_icon = getIcon((JSONArray) jObject.get("weather"));
+                HashMap<String, Float> temperature = getTemperature((JSONObject) jObject.get("main"));
 
-            weather = new Weather(description, city, country, weather_icon, temperature);
+                weather = new Weather(description, city, country, weather_icon, temperature);
+            } else {
+                throw new NotFoundException((String) jObject.get("cod"), (String) jObject.get("message"));
+            }
         } catch (ParseException parserEx) {
             weather = new Weather();
             parserEx.getStackTrace();
@@ -38,6 +42,7 @@ public class WeatherFormat {
             weather = new Weather();
             numberEx.getStackTrace();
         }
+
         return weather;
     }
 
