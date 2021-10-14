@@ -20,13 +20,13 @@
         <td>Description:</td>
         <td>{{ weather.description }}</td>
       </tr>
-      <tr>
-        <td *ngIf="weather.rain">Rain:</td>
-        <td *ngIf="weather.rain">{{ weather.rain }}</td>
+      <tr *ngIf="weather.rain">
+        <td>Rain:</td>
+        <td>{{ weather.rain }}</td>
       </tr>
-      <tr>
-        <td *ngIf="weather.snow">Snow:</td>
-        <td *ngIf="weather.rain">{{ weather.snow }}</td>
+      <tr *ngIf="weather.snow">
+        <td>Snow:</td>
+        <td>{{ weather.snow }}</td>
       </tr>
       <tr>
         <td>Max Temp:</td>

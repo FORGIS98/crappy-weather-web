@@ -32,6 +32,12 @@ public class WeatherFormat {
                 HashMap<String, Float> temperature = getTemperature((JSONObject) jObject.get("main"));
 
                 weather = new Weather(description, city, country, weather_icon, temperature);
+
+                if (jObject.containsKey("rain"))
+                    weather.setRain(getRain((JSONObject) jObject.get("rain")));
+                if (jObject.containsKey("snow"))
+                    weather.setRain(getSnow((JSONObject) jObject.get("snow")));
+
             } else {
                 throw new NotFoundException((String) jObject.get("cod"), (String) jObject.get("message"));
             }
@@ -84,5 +90,13 @@ public class WeatherFormat {
 
     private String getCountryCode(JSONObject jObject) {
         return jObject.get("country").toString();
+    }
+
+    private float getRain(JSONObject jObject) {
+        return Float.parseFloat(jObject.get("1h").toString());
+    }
+
+    private float getSnow(JSONObject jObject) {
+        return Float.parseFloat(jObject.get("1h").toString());
     }
 }
